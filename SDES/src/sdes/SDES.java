@@ -208,6 +208,7 @@ public class SDES {
 		System.out.printf ("%-14s %-14s %-14s %-14s\n", stringifyByteArray(rawkey2), stringifyByteArray(plaintext2), stringifyByteArray(Encrypt(rawkey2, plaintext2)), stringifyByteArray(Decrypt(rawkey2, Encrypt(rawkey2, plaintext2))));
 		System.out.printf ("%-14s %-14s %-14s %-14s\n", stringifyByteArray(rawkey3), stringifyByteArray(plaintext3), stringifyByteArray(Encrypt(rawkey3, plaintext3)), stringifyByteArray(Decrypt(rawkey3, Encrypt(rawkey3, plaintext3))));
 		System.out.printf ("%-14s %-14s %-14s %-14s\n", stringifyByteArray(rawkey4), stringifyByteArray(plaintext4), stringifyByteArray(Encrypt(rawkey4, plaintext4)), stringifyByteArray(Decrypt(rawkey4, Encrypt(rawkey4, plaintext4))));
+		System.out.println();
 		System.out.printf ("%-14s %-14s %-14s %-14s\n", stringifyByteArray(rawkey5), stringifyByteArray(plaintext5), stringifyByteArray(Encrypt(rawkey5, plaintext5)), stringifyByteArray(Decrypt(rawkey5, Encrypt(rawkey5, plaintext5))));
 		System.out.printf ("%-14s %-14s %-14s %-14s\n", stringifyByteArray(rawkey6), stringifyByteArray(plaintext6), stringifyByteArray(Encrypt(rawkey6, plaintext6)), stringifyByteArray(Decrypt(rawkey6, Encrypt(rawkey6, plaintext6))));
 		System.out.printf ("%-14s %-14s %-14s %-14s\n", stringifyByteArray(rawkey7), stringifyByteArray(plaintext7), stringifyByteArray(Encrypt(rawkey7, plaintext7)), stringifyByteArray(Decrypt(rawkey7, Encrypt(rawkey7, plaintext7))));
