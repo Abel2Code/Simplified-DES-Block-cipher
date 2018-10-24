@@ -4,7 +4,18 @@ public class TripleDES {
    
     public static void main(String[] args) {
         
-        initByteArrays();
+        byte[][] texts = initByteArrays();
+        
+        for( byte[] arr : texts ) {
+            for ( byte byt : arr) {
+                System.out.print(byt + " ");
+            }
+            System.out.println(" - - - - - - - -");
+        }
+        
+        
+        //System.out.printf ("%-14s %-14s %-14s %-14s\n", stringifyByteArray(rawkey5), stringifyByteArray(plaintext5), stringifyByteArray(Encrypt(rawkey5, plaintext5)), stringifyByteArray(Decrypt(rawkey5, Encrypt(rawkey5, plaintext5))));
+		
         
     }
     
