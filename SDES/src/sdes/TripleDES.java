@@ -74,25 +74,25 @@ public class TripleDES {
         byte[] pt4 = {1,0,1,0,1,0,1,0};       texts[14] = pt4;
         byte[] ct4 = new byte[8];             texts[15] = ct4;
         
-        byte[] rk9 = {};                         texts[16] = rk9;
-        byte[] rk10 = {0, 0, 0, 0, 0, 0, 0, 0};  texts[17] = rk10;
-        byte[] pt5 = {0, 0, 0, 0, 0, 0, 0, 0};   texts[18] = pt5;
-        byte[] ct5 = new byte[8];                texts[19] = ct5;
+        byte[] rk9 = {1,0,0,0,1,0,1,1,1,0};                         texts[16] = rk9;
+        byte[] rk10 = {0,1,1,0,1,0,1,1,1,0};  texts[17] = rk10;
+        byte[] pt5 = new byte[8];   texts[18] = pt5;
+        byte[] ct5 = {1,1,1,0,0,1,1,0};                texts[19] = ct5;
         
-        byte[] rk11 = {0, 0, 0, 0, 0, 0, 0, 0};   texts[20] = rk11;
-        byte[] rk12 = {0, 0, 0, 0, 0, 0, 0, 0};   texts[21] = rk12;
-        byte[] pt6 = {0, 0, 0, 0, 0, 0, 0, 0};    texts[22] = pt6;
-        byte[] ct6 = new byte[8];                 texts[23] = ct6;
+        byte[] rk11 = {1,0,1,1,1,0,1,1,1,1};   texts[20] = rk11;
+        byte[] rk12 = {0,1,1,0,1,0,1,1,1,0};   texts[21] = rk12;
+        byte[] pt6 = new byte[8];     texts[22] = pt6;
+        byte[] ct6 = {0,1,0,1,0,0,0,0};        texts[23] = ct6;
         
-        byte[] rk13 = {0, 0, 0, 0, 0, 0, 0, 0};   texts[24] = rk13;
-        byte[] rk14 = {0, 0, 0, 0, 0, 0, 0, 0};   texts[25] = rk14;
-        byte[] pt7 = {0, 0, 0, 0, 0, 0, 0, 0};    texts[26] = pt7;
-        byte[] ct7 = new byte[8];                 texts[27] = ct7;
+        byte[] rk13 = {0,0,0,0,0,0,0,0,0,0};   texts[24] = rk13;
+        byte[] rk14 = {0,0,0,0,0,0,0,0,0,0};   texts[25] = rk14;
+        byte[] pt7 = new byte[8];    texts[26] = pt7;
+        byte[] ct7 = {1,0,0,0,0,0,0,0};            texts[27] = ct7;
         
-        byte[] rk15 = {0, 0, 0, 0, 0, 0, 0, 0};   texts[28] = rk15;
-        byte[] rk16 = {0, 0, 0, 0, 0, 0, 0, 0};   texts[29] = rk16;
-        byte[] pt8 = {0, 0, 0, 0, 0, 0, 0, 0};    texts[30] = pt8;
-        byte[] ct8 = new byte[8];                 texts[31] = ct8;
+        byte[] rk15 = {1,1,1,1,1,1,1,1,1,1};   texts[28] = rk15;
+        byte[] rk16 = {1,1,1,1,1,1,1,1,1,1};   texts[29] = rk16;
+        byte[] pt8 = new byte[8];    texts[30] = pt8;
+        byte[] ct8 = {1,0,0,1,0,0,1,0};                 texts[31] = ct8;
         
         return texts;
     }
