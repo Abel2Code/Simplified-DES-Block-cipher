@@ -6,16 +6,21 @@ public class TripleDES {
         
         byte[][] texts = initByteArrays();
         
-        for( byte[] arr : texts ) {
-            for ( byte byt : arr) {
-                System.out.print(byt + " ");
-            }
-            System.out.println(" - - - - - - - -");
+        System.out.println("Raw Key 1       Raw Key 2         Plaintext      Ciphertext      DecipheredText");
+        
+        String key1, key2, plain, cipher;
+        
+        for( int i = 0; i < texts.length/2; i += 4) {            
+            key1 = stringifyByteArray(texts[i]);
+            key2 = stringifyByteArray(texts[i+1]);
+            plain = stringifyByteArray(texts[i+2]);
+            cipher = stringifyByteArray(Decrypt(texts[i], texts[i+1], texts[i+2]));
+            System.out.printf ("%-14s %-14s %-14s %-14s\n", key1, key2, plain, cipher);
+	
         }
         
         
-        //System.out.printf ("%-14s %-14s %-14s %-14s\n", stringifyByteArray(rawkey5), stringifyByteArray(plaintext5), stringifyByteArray(Encrypt(rawkey5, plaintext5)), stringifyByteArray(Decrypt(rawkey5, Encrypt(rawkey5, plaintext5))));
-		
+        	
         
     }
     
