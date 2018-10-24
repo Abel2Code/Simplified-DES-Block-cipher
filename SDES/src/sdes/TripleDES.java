@@ -1,5 +1,7 @@
 package sdes;
 
+import static sdes.SDES.stringifyByteArray;
+
 public class TripleDES {
    
     public static void main(String[] args) {
