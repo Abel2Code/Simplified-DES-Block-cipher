@@ -4,24 +4,34 @@ import static sdes.SDES.stringifyByteArray;
 
 public class TripleDES {
    
-    public static void main(String[] args) {
+    public static void main(String[] args) { // Start of main()
         
         byte[][] texts = initByteArrays();
         
-        System.out.println(" Raw Key 1      Raw Key 2     Plaintext      Ciphertext      DecipheredText");
+        System.out.println("\n Raw Key 1      Raw Key 2     Plaintext      Ciphertext    DecryptedText\n");
         
-        String key1, key2, plain, cipher;
+        String key1, key2, plain, cipher, decryp;
         
         for( int i = 0; i < texts.length/2; i += 4) {            
             key1 = stringifyByteArray(texts[i]);
             key2 = stringifyByteArray(texts[i+1]);
             plain = stringifyByteArray(texts[i+2]);
-            cipher = stringifyByteArray(Decrypt(texts[i], texts[i+1], texts[i+2]));
-            System.out.printf ("%-14s %-14s %-14s %-14s\n", key1, key2, plain, cipher);
-	
+            cipher = stringifyByteArray(Encrypt(texts[i], texts[i+1], texts[i+2]));
+            decryp = stringifyByteArray(Encrypt(texts[i], texts[i+1], texts[i+3]));
+            System.out.printf ("%-14s %-14s %-14s %-14s %-14s\n", key1, key2, plain, cipher, decryp);	
         }
         
-    }
+        for( int i = 0; i < texts.length/2; i += 4) {            
+            key1 = stringifyByteArray(texts[i]);
+            key2 = stringifyByteArray(texts[i+1]);
+            plain = stringifyByteArray(Decrypt(texts[i], texts[i+1], texts[i+3]));
+            cipher = stringifyByteArray(texts[i+2]);
+            decryp = stringifyByteArray(Decrypt(texts[i], texts[i+1], texts[i+3]));
+            System.out.printf ("%-14s %-14s %-14s %-14s %-14s\n", key1, key2, plain, cipher, decryp);	
+        }
+        System.out.println();
+        
+    } // End of main()
     
     
     public static byte[] Encrypt(byte[] rawkey1, byte[] rawkey2, byte[] plaintext) {
@@ -47,16 +57,6 @@ public class TripleDES {
     private static byte[][] initByteArrays() {
         
         byte[][] texts = new byte[32][8];
-        /*
-        byte[] rk1,  rk2,   pt1,  ct1,
-               rk3,  rk4,   pt2,  ct2,
-               rk5,  rk6,   pt3,  ct3,
-               rk7,  rk8,   pt4,  ct4,
-               rk9,  rk10,  pt5,  ct5,
-               rk11, rk12,  pt6,  ct6,
-               rk13, rk14,  pt7,  ct7,
-               rk15, rk17,  pt8,  ct8;
-        */
         
         byte[] rk1 = {0,0,0,0,0,0,0,0,0,0};   texts[0] = rk1;
         byte[] rk2 = {0,0,0,0,0,0,0,0,0,0};   texts[1] = rk2;
