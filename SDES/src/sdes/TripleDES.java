@@ -8,7 +8,7 @@ public class TripleDES {
         
         byte[][] texts = initByteArrays();
         
-        System.out.println("Raw Key 1       Raw Key 2         Plaintext      Ciphertext      DecipheredText");
+        System.out.println(" Raw Key 1      Raw Key 2     Plaintext      Ciphertext      DecipheredText");
         
         String key1, key2, plain, cipher;
         
@@ -20,9 +20,6 @@ public class TripleDES {
             System.out.printf ("%-14s %-14s %-14s %-14s\n", key1, key2, plain, cipher);
 	
         }
-        
-        
-        	
         
     }
     
