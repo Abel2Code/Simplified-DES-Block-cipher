@@ -155,7 +155,7 @@ public class SDES {
 		System.out.println();
 	}
 	
-	private static String stringifyByteArray(byte[] key) {
+	protected static String stringifyByteArray(byte[] key) {
 		String arr = "";
 		for(int i = 0; i < key.length; i++){
 			if(i == key.length/2){
