@@ -10,23 +10,30 @@ public class TripleDES {
         
         System.out.println("\n Raw Key 1      Raw Key 2     Plaintext      Ciphertext    DecryptedText\n");
         
+        byte[] k1, k2, pla, ciph, decr; 
         String key1, key2, plain, cipher, decryp;
         
-        for( int i = 0; i < texts.length/2; i += 4) {            
-            key1 = stringifyByteArray(texts[i]);
-            key2 = stringifyByteArray(texts[i+1]);
-            plain = stringifyByteArray(texts[i+2]);
-            cipher = stringifyByteArray(Encrypt(texts[i], texts[i+1], texts[i+2]));
-            decryp = stringifyByteArray(Encrypt(texts[i], texts[i+1], texts[i+3]));
+        for( int i = 0; i < texts.length/2; i += 4) { 
+            k1 = texts[i]; k2 = texts[i+1]; pla = texts[i+2] ; ciph = texts[i+3];
+            key1 = stringifyByteArray(k1);
+            key2 = stringifyByteArray(k2);
+            plain = stringifyByteArray(pla);
+            ciph = Encrypt(k1, k2, pla);
+            cipher = stringifyByteArray(ciph);
+            decr = Decrypt(k1, k2, ciph);
+            decryp = stringifyByteArray(decr);
             System.out.printf ("%-14s %-14s %-14s %-14s %-14s\n", key1, key2, plain, cipher, decryp);	
         }
         
-        for( int i = 0; i < texts.length/2; i += 4) {            
-            key1 = stringifyByteArray(texts[i]);
-            key2 = stringifyByteArray(texts[i+1]);
-            plain = stringifyByteArray(Decrypt(texts[i], texts[i+1], texts[i+3]));
-            cipher = stringifyByteArray(texts[i+2]);
-            decryp = stringifyByteArray(Decrypt(texts[i], texts[i+1], texts[i+3]));
+        for( int i = texts.length/2; i < texts.length; i += 4) {    
+            k1 = texts[i]; k2 = texts[i+1]; pla = texts[i+2] ; ciph = texts[i+3];
+            key1 = stringifyByteArray(k1);
+            key2 = stringifyByteArray(k2);
+            pla = Decrypt(k1, k2, ciph);
+            plain = stringifyByteArray(pla);
+            cipher = stringifyByteArray(ciph);
+            decr = Decrypt(k1, k2, ciph);
+            decryp = stringifyByteArray(decr);
             System.out.printf ("%-14s %-14s %-14s %-14s %-14s\n", key1, key2, plain, cipher, decryp);	
         }
         System.out.println();
