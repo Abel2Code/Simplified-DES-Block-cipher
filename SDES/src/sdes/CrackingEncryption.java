@@ -16,7 +16,8 @@ public class CrackingEncryption {
                 System.out.print(" ");
             System.out.print(encry[i]);
         }
-        System.out.println("\n");        
+        System.out.println("\n");
+        System.out.println(CASCII.toString(encry) + "\n");
                 
     }
     
