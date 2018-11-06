@@ -8,15 +8,8 @@ public class CrackingEncryption {
     
     public static void main(String[] args) {
         
-        System.out.println();
-        
         problem1();
-        
-        String msg1 = "../msg1.txt";
-        String msg2 = "../msg2.txt";
-        
-        byte[] msg1Bytes = parseFile(msg1);
-        byte[] msg2Bytes = parseFile(msg2);
+        problem2();
         
     }
     
@@ -52,6 +45,7 @@ public class CrackingEncryption {
     }
     
     public static void problem1() {
+        System.out.println();
         byte[] key = {0,1,1,1,0,0,1,1,0,1};
         String word = "CRYPTOGRAPHY";
         byte[] plaintext = CASCII.Convert(word);
@@ -84,11 +78,25 @@ public class CrackingEncryption {
 
     }
     
+    public static void problem2() {       
+        String msg1 = "../msg1.txt";
+        byte[] msg1Bytes = parseFile(msg1);
+        String msg2 = "../msg2.txt";
+        byte[] msg2Bytes = parseFile(msg2);
+        
+        printByteArr(msg1Bytes);
+        printByteArr(msg2Bytes);
+    }
+    
     private static void printByteArr(byte[] arr) {
+        printArrByRows(arr, 32);
+    }
+    
+    private static void printArrByRows(byte[] arr, int rows) {
         System.out.println();
         int len = arr.length;
         for ( int i = 0; i < len; i++ ) {
-            if ( i == len/2 )
+            if ( i % rows == 0)
                 System.out.println();
             else if (i != 0 && i % 4 == 0 ) 
                 System.out.print(" ");
