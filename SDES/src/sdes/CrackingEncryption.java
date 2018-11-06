@@ -2,6 +2,7 @@ package sdes;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,26 +27,31 @@ public class CrackingEncryption {
         System.out.println(CASCII.toString(encry) + "\n");
         
         System.out.println();
+                
+        parseFile();
+        
         
     }
     
-    public static byte[] parseFile(String path) {
+    public static void parseFile() {
         
         try {            
-            File file = new File("path");
-            
+            File file = new File("../msg1.txt");
+                        
             Scanner reader = new Scanner(file);
             byte b;
+            String n;
             System.out.println();
-                       
-            while ( reader.hasNextByte()) {
-                b = reader.nextByte();
-                System.out.print(b);
+            while ( reader.hasNextLine()) {
+                n = reader.nextLine();
+                System.out.println(n);
+                //b = reader.nextByte();
+                //System.out.print(b);
             }
             System.out.println();
             
         } catch (FileNotFoundException ex) {
-            System.out.println("\n ERROR: File Not Found \n");
+            System.out.println("\nERROR: File Not Found \n");
         }
         
     }
