@@ -25,35 +25,45 @@ public class CrackingEncryption {
         }
         System.out.println("\n");
         System.out.println(CASCII.toString(encry) + "\n");
+
+        String msg1, msg2;
+        msg1 = "../msg1.txt";
+        msg2 = "../msg2.txt";
         
-        System.out.println();
-                
         parseFile();
         
         
     }
     
-    public static void parseFile() {
+    public static byte[] parseFile(String relPath) {
         
         try {            
-            File file = new File("../msg1.txt");
+            File file = new File(relPath);
                         
             Scanner reader = new Scanner(file);
             byte b;
-            String n;
-            System.out.println();
-            while ( reader.hasNextLine()) {
-                n = reader.nextLine();
-                System.out.println(n);
-                //b = reader.nextByte();
-                //System.out.print(b);
+            String line, sub;         
+            byte[] bytes;
+            
+            // This if statement is assuming that there is only one line, and
+            // that all the bytes are written in that single line.
+            if ( reader.hasNextLine()) {        
+                line = reader.nextLine();
+                bytes = new byte[line.length()];       
+                for ( int i = 0; i < line.length(); i++) {
+                    sub = line.substring(i, i+1);
+                    b = Byte.parseByte(sub);
+                    bytes[i] = b;
+                }
+                return bytes;
             }
-            System.out.println();
+            reader.close();
+            return null;
             
         } catch (FileNotFoundException ex) {
             System.out.println("\nERROR: File Not Found \n");
         }
-        
+        return null;
     }
     
 }
