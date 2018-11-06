@@ -65,7 +65,7 @@ public class CrackingEncryption {
         //printArrByRows(msg2Bytes, 64);
         
         byte[] plainSect;
-        byte[] section = new byte[8];
+        byte[] section = new byte[8]; 
         byte[] ciphertext = new byte[msg1Bytes.length];
                
         byte[][] keys = permutations(10);
