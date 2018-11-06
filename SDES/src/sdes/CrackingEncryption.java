@@ -26,12 +26,11 @@ public class CrackingEncryption {
         System.out.println("\n");
         System.out.println(CASCII.toString(encry) + "\n");
 
-        String msg1, msg2;
-        msg1 = "../msg1.txt";
-        msg2 = "../msg2.txt";
+        String msg1 = "../msg1.txt";
+        String msg2 = "../msg2.txt";
         
-        parseFile();
-        
+        byte[] msg1Bytes = parseFile(msg1);
+        byte[] msg2Bytes = parseFile(msg2);
         
     }
     
