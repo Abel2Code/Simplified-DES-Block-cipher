@@ -2,14 +2,37 @@ package sdes;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class CrackingEncryption {
     
     public static void main(String[] args) {
         
+        
+        byte[][] keys = permutations(10);
+        
+        for ( byte[] list : keys ) {
+            printByteArr(list);
+        }
+        
+        
+        int count = 0;
+        int n = 10;
+        byte[] key = new byte[(int) Math.pow(2, n)];
+        for ( int i = 0; i < n; i++ ) {
+            for ( int j = i+1; j < n; j++ ) {
+                //System.out.println("i : " + i + "  |  j : " + j);
+                count++;
+            }
+        }
+        System.out.println("\n"+count);
+        
+        //printByteArr(key);
+        
         problem1();
-        problem2();
+        //problem2();
+        
         
     }
     
@@ -46,6 +69,9 @@ public class CrackingEncryption {
     
     public static void problem1() {
         System.out.println();
+        
+        System.out.println(" - - - - - - - Problem 1 - - - - - - - - - \n");
+        
         byte[] key = {0,1,1,1,0,0,1,1,0,1};
         String word = "CRYPTOGRAPHY";
         byte[] plaintext = CASCII.Convert(word);
@@ -84,8 +110,26 @@ public class CrackingEncryption {
         String msg2 = "../msg2.txt";
         byte[] msg2Bytes = parseFile(msg2);
         
-        printByteArr(msg1Bytes);
-        printByteArr(msg2Bytes);
+        //printArrByRows(msg1Bytes, 64);
+        //printArrByRows(msg2Bytes, 64);
+        
+        byte[] plainSect;
+        byte[] section = new byte[8];
+        byte[] ciphertext = new byte[msg1Bytes.length];
+        
+        
+        for ( int i = 0; i < ciphertext.length; i+=0 ) {            
+            for (int x = 0; x < 8; x++, i++) {
+                section[x] = ciphertext[i];
+            }
+            //plainSect = SDES.Decrypt(key, section);
+            for (int x = 0, y = i-8; x < 8; x++, y++) {
+                //ciphertext[y] = plainSect[x];
+            }
+        }
+        
+        
+        
     }
     
     private static void printByteArr(byte[] arr) {
@@ -105,4 +149,36 @@ public class CrackingEncryption {
         System.out.println("\n");
     }
     
-}
+    private static byte[][] processPermutes(Object[] arr) {
+        byte[][] perms = new byte[arr.length][10];
+        String str, sub;
+        byte b;
+        for ( int i = 0; i < arr.length; i++ ) {
+            str = (String) arr[i];
+            for ( int j = 0; j < str.length(); j++ ) {
+                sub = str.substring(j, j+1);
+                b = Byte.parseByte(sub);
+                perms[i][j] = b;
+            }
+        }
+        return perms;
+    }
+        
+    private static byte[][] permutations(int num) {
+        ArrayList<String> strs = new ArrayList<>();
+        permutation(num, "", strs);
+        return processPermutes(strs.toArray());
+    }
+
+    private static void permutation(int num, String str, ArrayList<String> list) {
+        if (num == 0) {
+            list.add(str);
+            return;
+        }
+        for (int i = 0; i <= 1; i++) {
+            permutation(num - 1, str + Integer.toString(i), list);
+        }
+    }
+    
+    
+}   
