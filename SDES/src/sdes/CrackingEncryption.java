@@ -56,30 +56,15 @@ public class CrackingEncryption {
         
         String msg1 = "../msg1.txt";
         byte[] ciphertext = parseFile(msg1);
-                
-        byte[] plainSect;
-        byte[] section = new byte[8]; 
-        byte[] plaintext = new byte[ciphertext.length];
+        
         byte[][] keys = keyPermutations();
         
         ArrayList<String> deciph = new ArrayList<>();
-        int attemptNum = 0;
+        int attempt = 0;
         
         for ( byte[] key : keys ) {
-            for ( int i = 0; i < plaintext.length; i+=0 ) {            
-                for (int x = 0; x < 8; x++, i++) {
-                    section[x] = ciphertext[i];
-                }
-                plainSect = SDES.Decrypt(key, section);
-                for (int x = 0, y = i-8; x < 8; x++, y++) {
-                    plaintext[y] = plainSect[x];
-                }
-            }
-            
-            String str = keyAndByteArrStr(key, plaintext);
-            deciph.add(attemptNum + ". " + str);
-            attemptNum++;
-                                    
+            deciph.add( decryptWithKey(key, ciphertext, attempt) );
+            attempt++;
         }
         deciph.forEach((s) -> {
             System.out.println(s);
@@ -95,6 +80,28 @@ public class CrackingEncryption {
         String msg2 = "../msg2.txt";
         byte[] ciphertext = parseFile(msg2);
         
+        
+        
+    }
+    
+    private static String decryptWithKey(byte[] key, byte[] ciphertext, int num) {
+        
+        byte[] plainSect;
+        byte[] section = new byte[8]; 
+        byte[] plaintext = new byte[ciphertext.length];
+        
+        for ( int i = 0; i < plaintext.length; i+=0 ) {            
+            for (int x = 0; x < 8; x++, i++) {
+                section[x] = ciphertext[i];
+            }
+            plainSect = SDES.Decrypt(key, section);
+            for (int x = 0, y = i-8; x < 8; x++, y++) {
+                plaintext[y] = plainSect[x];
+            }
+        }
+        
+        String str = keyAndByteArrStr(key, plaintext);
+        return num + ". " + str;
     }
     
     private static byte[][] processPermutes(Object[] arr) {
