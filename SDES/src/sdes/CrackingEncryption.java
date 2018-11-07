@@ -7,11 +7,10 @@ import java.util.Scanner;
 
 public class CrackingEncryption {
     
-    public static void main(String[] args) {
-        
+    public static void main(String[] args) {        
         problem1();
         problem2();        
-        
+        problem3();
     }
     
     public static void problem1() {
@@ -84,12 +83,18 @@ public class CrackingEncryption {
         }
         deciph.forEach((s) -> {
             System.out.println(s);
-        });                
+        });
+        
+        System.out.println("\nAfter producing all of the possiblities, one stood out in english. This is what we found: \n\n" + deciph.get(756) + "\n");
     }
     
-    public static void problem3() {        
+    public static void problem3() {
+        
+        System.out.println(" - - - - - - Problem 3 - - - - - - - -\n");
+        
         String msg2 = "../msg2.txt";
-        byte[] msg2Bytes = parseFile(msg2);
+        byte[] ciphertext = parseFile(msg2);
+        
     }
     
     private static byte[][] processPermutes(Object[] arr) {
