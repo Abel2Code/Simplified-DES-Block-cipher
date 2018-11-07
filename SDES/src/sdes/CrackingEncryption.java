@@ -95,6 +95,10 @@ public class CrackingEncryption {
         deciph.forEach((s) -> {
             System.out.println(s);
         });
+        
+        System.out.println("hello ?");
+        System.out.println("\nAfter producing all of the possiblities, one stood out in english. This is what we found: \n\n" + deciph.get(922979) + "\n");
+        System.out.println("hello again ?");
     }
     
     private static String sdesDecryptWithKey(byte[] key, byte[] ciphertext, int num) {
@@ -185,14 +189,14 @@ public class CrackingEncryption {
     
     private static String keysAndByteArrStr(byte[] key1, byte[] key2, byte[] cascii) {
         StringBuilder sb = new StringBuilder();
-        sb.append("key = { ");
+        sb.append("key 1 = { ");
         for ( int i = 0; i < key1.length; i++ ) {
             if ( i != key1.length - 1 )
                 sb.append(key1[i]).append(",");
             else
                 sb.append(key1[i]).append(" } ");
         }
-        sb.append("key = { ");
+        sb.append("key 2 = { ");
         for ( int i = 0; i < key2.length; i++ ) {
             if ( i != key2.length - 1 )
                 sb.append(key2[i]).append(",");
