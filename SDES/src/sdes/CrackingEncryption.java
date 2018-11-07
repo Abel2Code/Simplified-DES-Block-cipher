@@ -57,13 +57,7 @@ public class CrackingEncryption {
         
         String msg1 = "../msg1.txt";
         byte[] ciphertext = parseFile(msg1);
-        
-        //String msg2 = "../msg2.txt";
-        //byte[] msg2Bytes = parseFile(msg2);
-        
-        //printArrByRows(msg1Bytes, 64);
-        //printArrByRows(msg2Bytes, 64);
-        
+                
         byte[] plainSect;
         byte[] section = new byte[8]; 
         byte[] plaintext = new byte[ciphertext.length];
@@ -91,6 +85,11 @@ public class CrackingEncryption {
         deciph.forEach((s) -> {
             System.out.println(s);
         });                
+    }
+    
+    public static void problem3() {        
+        String msg2 = "../msg2.txt";
+        byte[] msg2Bytes = parseFile(msg2);
     }
     
     private static byte[][] processPermutes(Object[] arr) {
