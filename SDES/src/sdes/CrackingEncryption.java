@@ -63,7 +63,7 @@ public class CrackingEncryption {
         int attempt = 0;
         
         for ( byte[] key : keys ) {
-            deciph.add( decryptWithKey(key, ciphertext, attempt) );
+            deciph.add( sdesDecryptWithKey(key, ciphertext, attempt) );
             attempt++;
         }
         deciph.forEach((s) -> {
@@ -80,11 +80,24 @@ public class CrackingEncryption {
         String msg2 = "../msg2.txt";
         byte[] ciphertext = parseFile(msg2);
         
+        byte[][] key1s = keyPermutations();
+        byte[][] key2s = keyPermutations();
         
+        ArrayList<String> deciph = new ArrayList<>();
+        int attempt = 0;
         
+        for ( byte[] key1 : key1s ) {            
+            for ( byte[] key2 : key2s ) {                
+                deciph.add( tripledesDecryptWithKeys(key1, key2, ciphertext, attempt) );
+                attempt++;                
+            }            
+        }
+        deciph.forEach((s) -> {
+            System.out.println(s);
+        });
     }
     
-    private static String decryptWithKey(byte[] key, byte[] ciphertext, int num) {
+    private static String sdesDecryptWithKey(byte[] key, byte[] ciphertext, int num) {
         
         byte[] plainSect;
         byte[] section = new byte[8]; 
@@ -103,6 +116,27 @@ public class CrackingEncryption {
         String str = keyAndByteArrStr(key, plaintext);
         return num + ". " + str;
     }
+    
+    private static String tripledesDecryptWithKeys(byte[] key1, byte[] key2, byte[] ciphertext, int num) {
+        
+        byte[] plainSect;
+        byte[] section = new byte[8]; 
+        byte[] plaintext = new byte[ciphertext.length];
+        
+        for ( int i = 0; i < plaintext.length; i+=0 ) {            
+            for (int x = 0; x < 8; x++, i++) {
+                section[x] = ciphertext[i];
+            }
+            plainSect = TripleDES.Decrypt(key1, key2, section);
+            for (int x = 0, y = i-8; x < 8; x++, y++) {
+                plaintext[y] = plainSect[x];
+            }
+        }
+        
+        String str = keysAndByteArrStr(key1, key2, plaintext);
+        return num + ". " + str;
+    }
+    
     
     private static byte[][] processPermutes(Object[] arr) {
         byte[][] perms = new byte[arr.length][10];
@@ -143,6 +177,27 @@ public class CrackingEncryption {
                 sb.append(key[i]).append(",");
             else
                 sb.append(key[i]).append(" } ");
+        }
+        sb.append("-> ").append(CASCII.toString(cascii));
+        
+        return sb.toString();
+    }
+    
+    private static String keysAndByteArrStr(byte[] key1, byte[] key2, byte[] cascii) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("key = { ");
+        for ( int i = 0; i < key1.length; i++ ) {
+            if ( i != key1.length - 1 )
+                sb.append(key1[i]).append(",");
+            else
+                sb.append(key1[i]).append(" } ");
+        }
+        sb.append("key = { ");
+        for ( int i = 0; i < key2.length; i++ ) {
+            if ( i != key2.length - 1 )
+                sb.append(key2[i]).append(",");
+            else
+                sb.append(key2[i]).append(" } ");
         }
         sb.append("-> ").append(CASCII.toString(cascii));
         
