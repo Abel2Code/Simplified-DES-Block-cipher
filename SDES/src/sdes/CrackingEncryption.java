@@ -56,7 +56,7 @@ public class CrackingEncryption {
         System.out.println(" - - - - - - Problem 2 - - - - - - - -\n");
         
         String msg1 = "../msg1.txt";
-        byte[] msg1Bytes = parseFile(msg1);
+        byte[] ciphertext = parseFile(msg1);
         
         //String msg2 = "../msg2.txt";
         //byte[] msg2Bytes = parseFile(msg2);
@@ -66,51 +66,76 @@ public class CrackingEncryption {
         
         byte[] plainSect;
         byte[] section = new byte[8]; 
-        byte[] ciphertext = new byte[msg1Bytes.length];
-               
-        byte[][] keys = permutations(10);
+        byte[] plaintext = new byte[ciphertext.length];
+        byte[][] keys = keyPermutations();
         
         ArrayList<String> deciph = new ArrayList<>();
-                
+        int attemptNum = 0;
+        
         for ( byte[] key : keys ) {
-            for ( int i = 0; i < ciphertext.length; i+=0 ) {            
+            for ( int i = 0; i < plaintext.length; i+=0 ) {            
                 for (int x = 0; x < 8; x++, i++) {
-                    section[x] = msg1Bytes[i];
+                    section[x] = ciphertext[i];
                 }
                 plainSect = SDES.Decrypt(key, section);
                 for (int x = 0, y = i-8; x < 8; x++, y++) {
-                    ciphertext[y] = plainSect[x];
+                    plaintext[y] = plainSect[x];
                 }
             }
             
-            deciph.add(CASCII.toString(ciphertext));
-            
-            /*
-            
-            //if (CASCII.toString(ciphertext).indexOf("D") > 0) {
-                String str = CASCII.toString(ciphertext).substring(0,10);                
-                
-                System.out.print(str + " : ");
-                                
-                for ( int x = 0; x < 5; x++ ) {
-                    System.out.print(ciphertext[x]);
-                }
-                System.out.print(" | ");
-                
-                for ( int i = 0; i < str.length(); i++ ) {
-                    System.out.print(CASCII.Convert(str.charAt(i)) + ", ");
-                }
-                System.out.println();
-            //}
-            */
-           
-            
-        } 
-        quickSort(deciph);
-        for ( String s : deciph ) {
-            System.out.println(s + "\n");
+            String str = keyAndByteArrStr(key, plaintext);
+            deciph.add(attemptNum + ". " + str);
+            attemptNum++;
+                                    
         }
-                
+        deciph.forEach((s) -> {
+            System.out.println(s);
+        });                
+    }
+    
+    private static byte[][] processPermutes(Object[] arr) {
+        byte[][] perms = new byte[arr.length][10];
+        String str, sub;
+        byte b;
+        for ( int i = 0; i < arr.length; i++ ) {
+            str = (String) arr[i];
+            for ( int j = 0; j < str.length(); j++ ) {
+                sub = str.substring(j, j+1);
+                b = Byte.parseByte(sub);
+                perms[i][j] = b;
+            }
+        }
+        return perms;
+    }
+        
+    private static byte[][] keyPermutations() {
+        ArrayList<String> strs = new ArrayList<>();
+        permutation(10, "", strs);
+        return processPermutes(strs.toArray());
+    }
+
+    private static void permutation(int num, String str, ArrayList<String> list) {
+        if (num == 0) {
+            list.add(str);
+            return;
+        }
+        for (int i = 0; i <= 1; i++) {
+            permutation(num - 1, str + Integer.toString(i), list);
+        }
+    }
+    
+    private static String keyAndByteArrStr(byte[] key, byte[] cascii) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("key = { ");
+        for ( int i = 0; i < key.length; i++ ) {
+            if ( i != key.length - 1 )
+                sb.append(key[i]).append(",");
+            else
+                sb.append(key[i]).append(" } ");
+        }
+        sb.append("-> ").append(CASCII.toString(cascii));
+        
+        return sb.toString();
     }
     
     private static void printByteArr(byte[] arr) {
@@ -130,36 +155,6 @@ public class CrackingEncryption {
         System.out.println("\n");
     }
     
-    private static byte[][] processPermutes(Object[] arr) {
-        byte[][] perms = new byte[arr.length][10];
-        String str, sub;
-        byte b;
-        for ( int i = 0; i < arr.length; i++ ) {
-            str = (String) arr[i];
-            for ( int j = 0; j < str.length(); j++ ) {
-                sub = str.substring(j, j+1);
-                b = Byte.parseByte(sub);
-                perms[i][j] = b;
-            }
-        }
-        return perms;
-    }
-        
-    private static byte[][] permutations(int num) {
-        ArrayList<String> strs = new ArrayList<>();
-        permutation(num, "", strs);
-        return processPermutes(strs.toArray());
-    }
-
-    private static void permutation(int num, String str, ArrayList<String> list) {
-        if (num == 0) {
-            list.add(str);
-            return;
-        }
-        for (int i = 0; i <= 1; i++) {
-            permutation(num - 1, str + Integer.toString(i), list);
-        }
-    }
     
     public static byte[] parseFile(String relPath) {
         
@@ -191,35 +186,5 @@ public class CrackingEncryption {
         }
         return null;
     }
-    
-    public static <E extends Comparable<E>> void quickSort(ArrayList<E> list) {
-        quickSort(list, 0, list.size()-1);
-    }
-    
-    private static <E extends Comparable<E>> void quickSort(ArrayList<E> list,int low, int high) {
-        if(low < high) {
-            int p = partitian(list, low, high);
-            quickSort(list, low, p-1);
-            quickSort(list, p+1, high);
-        }
-    }
-    
-    private static <E extends Comparable<E>> int partitian(ArrayList<E> list,int low, int high) {
-        E pivot = list.get(high);
-        int i = low - 1;
-        
-        for(int j = low; j < high; j++) {
-            E temp1 = list.get(j);
-            if(temp1.compareTo(pivot) < 0 || temp1.equals(pivot)) {
-                i++;
-                list.set(j, list.get(i));
-                list.set(i, temp1);
-            }
-        }
-        
-        E temp2 = list.get(i+1);
-        list.set(i+1, pivot);
-        list.set(high, temp2);
-        return i+1;
-    }
+
 }   
