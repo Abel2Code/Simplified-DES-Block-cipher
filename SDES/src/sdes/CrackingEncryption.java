@@ -7,10 +7,23 @@ import java.util.Scanner;
 
 public class CrackingEncryption {
     
-    public static void main(String[] args) {        
+    public static void main(String[] args) {
+                
+        String msg1, msg2;
+        boolean isLocal = filePathPrompt();
+        if ( isLocal ) {
+            String[] paths = grabPaths();
+            msg1 = paths[0];
+            msg2 = paths[1];
+        }
+        else {
+            msg1 = psuedoFileMsg1;
+            msg2 = psuedoFileMsg2; 
+        }
+        
         problem1();
-        problem2();        
-        problem3();
+        problem2(isLocal, msg1);
+        problem3(isLocal, msg2);
     }
     
     public static void problem1() {
@@ -47,10 +60,10 @@ public class CrackingEncryption {
         
         System.out.println("This is the cipher text in CASCII.");
         System.out.println(CASCII.toString(ciphertext) + "\n");
-
+        
     }
     
-    public static void problem2() {     
+    public static void problem2(boolean isLocal, String file) {
         
         System.out.println( problemNum(2) );
         
@@ -58,10 +71,16 @@ public class CrackingEncryption {
         
         System.out.println(" * This may take a few seconds. Please wait. Thank you * \n");
         
-        int answerPosition = 756;
+        int answerPosition = 756;  // This value is hard coded because i spent the time to manually search the output for the decrypted message.
+                                   // It's used to simmplifiy the code, since it was alreaddy manually found.
+        byte[] ciphertext;
         
-        String msg1 = "../msg1.txt";
-        byte[] ciphertext = parseFile(msg1);
+        if ( isLocal ) {
+            ciphertext = parseFile(file);
+        }
+        else {
+            ciphertext = psuedoParse(file);
+        }
         
         byte[][] keys = keyPermutations();
         
@@ -76,18 +95,23 @@ public class CrackingEncryption {
         performAction(deciph, answerPosition, result);
     }
     
-    public static void problem3() {
+    public static void problem3(boolean isLocal, String file) {
         
         System.out.println( problemNum(3) );
         
         Show result = askPrompt(1024*1024);
         
         int answerPosition = 922979;  // This value is hard coded because i spent the time to manually search the output for the decrypted message.
-                              // It's used to simmplifiy the code, since it was alreaddy manually found.
+                                      // It's used to simmplifiy the code, since it was alreaddy manually found.        
+        byte[] ciphertext;
         
-        String msg2 = "../msg2.txt";
-        byte[] ciphertext = parseFile(msg2);
-        
+        if ( isLocal ) {
+            ciphertext = parseFile(file);
+        }
+        else {
+            ciphertext = psuedoParse(file);
+        }
+                
         byte[][] key1s = keyPermutations();
         byte[][] key2s = keyPermutations();
         
@@ -230,41 +254,6 @@ public class CrackingEncryption {
         System.out.println("\n");
     }
     
-    
-    public static byte[] parseFile(String relPath) {
-        
-        try {            
-            File file = new File(relPath);
-                        
-            Scanner reader = new Scanner(file);
-            byte b;
-            String line, sub;         
-            byte[] bytes;
-            
-            // This if statement is assuming that there is only one line, and
-            // that all the bytes are written in that single line.
-            if ( reader.hasNextLine()) {        
-                line = reader.nextLine();
-                bytes = new byte[line.length()];       
-                for ( int i = 0; i < line.length(); i++) {
-                    sub = line.substring(i, i+1);
-                    b = Byte.parseByte(sub);
-                    bytes[i] = b;
-                }
-                return bytes;
-            }
-            reader.close();
-            return null;
-            
-        } catch (FileNotFoundException ex) {
-            System.out.println("\nERROR: File Not Found \n");
-        }
-        return null;
-    }
-
-    
-    private static enum Show { ALL, SECT, ANS, NONE };
-    
     private static Show askPrompt(int possible) {
         String prompt = "What would you like to display for this problem.\n"
                       + "  Choose one of the following commands to determine which choice you decide. \n"
@@ -278,35 +267,30 @@ public class CrackingEncryption {
     private static Show sayAndAskPrompt(String prompt) {
         
         Scanner reader = new Scanner(System.in);
-        boolean notAnswered = true;
-        String input = null;
-        
-        try {
-            do {
-                System.out.println("\n" + prompt);
-                input = reader.nextLine();
-                input = input.trim().toLowerCase();
+        String input = null;        
+        System.out.print("\n" + prompt);
+        do {
+            System.out.println();
+            input = reader.nextLine();
+            input = input.trim().toLowerCase();
+             
+            switch(input) {
+                case "all":
+                    return Show.ALL;
+                case "sect":
+                    return Show.SECT;
+                case "ans":
+                    return Show.ANS;
+                case "none":
+                    return Show.NONE;
+                default:
+                    System.out.print(">> Not a valid Input, Try again. <<");
+                    break;
+            }
                 
-                switch(input) {
-                    case "all":
-                        return Show.ALL;
-                    case "sect":
-                        return Show.SECT;
-                    case "ans":
-                        return Show.ANS;
-                    case "none":
-                        return Show.NONE;
-                    default:
-                        break;
-                }
-                
-            } while ( notAnswered || input != null || input.length() > 0 );
+        } while ( input != null || input.length() > 0 );
             
-            reader.close();
-            
-        } catch(NullPointerException e) {
-            System.out.println("That was not a valid input. Please try again.");
-        }
+        reader.close();
         
         return null;
     }
@@ -359,6 +343,112 @@ public class CrackingEncryption {
         sb.append("*********                      Problem # " + questionNum + "                      ***********\n");
         sb.append("***************************************************************************");
         return sb.toString();
+    }    
+        
+    public static byte[] parseFile(String relPath) {
+        
+        try {
+            File file = new File(relPath);
+                        
+            try (Scanner reader = new Scanner(file)) {
+                
+                byte b;
+                String line, sub;
+                byte[] bytes;
+                // This if statement is assuming that there is only one line, and
+                // that all the bytes are written in that single line.
+                if ( reader.hasNextLine()) {
+                    line = reader.nextLine();
+                    bytes = new byte[line.length()];
+                    for ( int i = 0; i < line.length(); i++) {
+                        sub = line.substring(i, i+1);
+                        b = Byte.parseByte(sub);
+                        bytes[i] = b;
+                    }
+                    return bytes;
+                }
+            }
+            return null;
+            
+        } catch (FileNotFoundException ex) {
+            System.out.println("\nERROR: File Not Found \n");
+        }
+        return null;
     }
     
+    private static byte[] psuedoParse(String file) {
+        byte b;
+        String sub;
+        byte[] bytes;
+        // This if statement is assuming that there is only one line, and
+        // that all the bytes are written in that single line.
+        
+        bytes = new byte[file.length()];
+        for ( int i = 0; i < file.length(); i++) {
+            sub = file.substring(i, i+1);
+            b = Byte.parseByte(sub);
+            bytes[i] = b;
+        }
+        return bytes;
+    }
+    
+    
+    
+    private static String[] grabPaths() {
+        Scanner sc = new Scanner(System.in);        
+        String[] paths = new String[2];
+        
+        System.out.println("\nWhat is the file path for the msg1.txt file that will be used ?");
+        String path1 = sc.nextLine();  
+        paths[0] = path1;
+        
+        System.out.println("\nWhat is the file path for the msg2.txt file that will be used ?");
+        String path2 = sc.nextLine();  
+        paths[1] = path2;
+        
+        sc.close();
+        
+        return paths;
+    }
+    
+    private static boolean filePathPrompt() {
+        System.out.println("\n * Before we begin, if you want to use a file that is on your local machine then you"
+                       + "\n     are going to have to provide the file paths for both the msg1 and msg2 file.");
+        System.out.println(" * Also, the data from each file (msg1, msg2) is already stored in this program"
+                         + "\n     for easy access, and no path is required.");
+        System.out.println("\n * Do you wish to continue with your own files (file path required) from your local machine"
+                         + "\n   or from the msg1 and ms2 file data stored in this program. (it is the exact same data as the files provided on CSNS) ?\n");
+        System.out.println("    Type in one of the following choices: ");
+        System.out.println("      local  -  I want to use my own ms1 and ms2 files from my local machine (Requires both file paths)\n"
+                         + "      stored -  I want to use the data from msg1 and ms2 that is already stored in this program (Exact same data as msg1.txt and ms2.txt from CSNS)");
+        Scanner sc = new Scanner(System.in);
+        String isLocal;
+        do {
+            isLocal = sc.nextLine().trim().toLowerCase();
+            switch (isLocal) {
+                case "local":
+                    return true;
+                case "stored":
+                    return false;
+                default:
+                    System.out.println(">> Not a valid Input, Try again. <<");
+                    break;
+            }
+        } while ( isLocal != null || isLocal.length() > 0 );
+        sc.close();
+        return false;
+    }
+    
+    private static enum Show { ALL, SECT, ANS, NONE };
+    
+    private static final String psuedoFileMsg1 = "1011011001111001001011101111110000111110100000000001110111010001111011111101101100010011000000101101011010101000101111100011101011010111"
+            + "100011101001010111101100101110000010010101110001110111011111010101010100001100011000011010101111011111010011110111001001011100101101001000011011111011000010010001011"
+            + "101100011011110000000110010111111010000011100011111111000010111010100001100001010011001010101010000110101101111111010010110001001000001111000000011110000011110110010"
+            + "010101010100001000011010000100011010101100000010111000000010101110100001000111010010010101110111010010111100011111010101111011101111000101001010001101100101100111001"
+            + "110111001100101100011111001100000110100001001100010000100011100000000001001010011101011100101000111011100010001111101011111100000010111110101010000000100110110111111"
+            + "000000111110111010100110000010110000111010001111000101011111101011101101010010100010111100011100000001010101110111111101101100101010011100111011110101011011";
+    
+    private static final String psuedoFileMsg2 = "0001111110011111111001111110110011100000001100101111001010101011000101110100110100000011001101011111111000000000101011111100000101001011"
+            + "100111100101010110000011011110001111110101110010010001010100001100110010100000010111101100001001101011110001000100100010000111110010000000100000000110110100000000101"
+            + "0111010000001000010011100101111001101111011001001010001100010100000";
 }   
