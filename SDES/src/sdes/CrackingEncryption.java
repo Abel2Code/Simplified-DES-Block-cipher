@@ -52,7 +52,13 @@ public class CrackingEncryption {
     
     public static void problem2() {     
         
-        System.out.println("\n - - - - - - Problem 2 - - - - - - - -\n");
+        System.out.println("\n - - - - - - Problem 2 - - - - - - - -");
+        
+        Show result = askPrompt();
+        
+        System.out.println(" * This may take a few seconds. Please wait. Thank you * \n");
+        
+        int answerPosition = 756;
         
         String msg1 = "../msg1.txt";
         byte[] ciphertext = parseFile(msg1);
@@ -66,11 +72,8 @@ public class CrackingEncryption {
             deciph.add( sdesDecryptWithKey(key, ciphertext, attempt) );
             attempt++;
         }
-        deciph.forEach((s) -> {
-            System.out.println(s);
-        });
         
-        System.out.println("\nAfter producing all of the possiblities, one stood out in english. This is what we found: \n\n" + deciph.get(756) + "\n");
+        performAction(deciph, answerPosition, result);
     }
     
     public static void problem3() {
@@ -79,7 +82,7 @@ public class CrackingEncryption {
         
         Show result = askPrompt();
         
-        int ansPos = 922979;  // This value is hard coded because i spent the time to manually search the output for the decrypted message.
+        int answerPosition = 922979;  // This value is hard coded because i spent the time to manually search the output for the decrypted message.
                               // It's used to simmplifiy the code, since it was alreaddy manually found.
         
         String msg2 = "../msg2.txt";
@@ -93,50 +96,14 @@ public class CrackingEncryption {
         
         System.out.println(" * This may take a couple minutes. Please wait. Thank you * \n");
         
-        for ( byte[] key1 : key1s ) {            
-            for ( byte[] key2 : key2s ) {                
+        for ( byte[] key1 : key1s ) {
+            for ( byte[] key2 : key2s ) {
                 deciph.add( tripledesDecryptWithKeys(key1, key2, ciphertext, attempt) );
                 attempt++;                
             }            
         }
         
-        switch (result) {
-            
-            case ALL:
-                System.out.println("These are ALL the possible CASCII decode string.\n");
-                for ( int i = 0; i < deciph.size(); i++ ) {
-                    if ( i != ansPos )
-                        System.out.println("   "+deciph.get(i));
-                    else
-                        System.out.println("\n-> "+deciph.get(i)+"\n");
-                }
-                System.out.println("\nAfter producing all of the possiblities, one stood out in english. This is what we found: \n\n" + deciph.get(ansPos) + "\n");
-                break;
-                
-            case SECT:
-                System.out.println("This is the SECCTION where the answer was located (for easy check-ablility):\n");                
-                for (int i = ansPos-5; i < ansPos+5; i++) {
-                    if ( i != ansPos )
-                        System.out.println("   "+deciph.get(i));
-                    else
-                        System.out.println("\n-> "+deciph.get(i)+"\n");
-                }
-                System.out.println("\nAfter producing all of the possiblities, one stood out in english. This is what we found: \n\n" + deciph.get(ansPos) + "\n");
-                break;
-                
-            case ANS:
-                System.out.println("\nAfter producing all of the possiblities, one stood out in english. This is the ANSWER we found: \n\n" + deciph.get(ansPos) + "\n");
-                break;
-                
-            case NONE:
-                System.out.println("All the possibilities were found, you decided not to show any.\n");
-                break;
-                
-            default:
-                System.out.println("ERR: Something went wrong while deciding on acction. :/");
-                break;
-        }
-        
+        performAction(deciph, answerPosition, result);        
     }
     
     private static String sdesDecryptWithKey(byte[] key, byte[] ciphertext, int num) {
@@ -296,53 +263,93 @@ public class CrackingEncryption {
     }
 
     
-    public static enum Show { ALL, SECT, ANS, NONE };
+    private static enum Show { ALL, SECT, ANS, NONE };
     
     private static Show askPrompt() {
         String prompt = "What would you like to display for this problem.\n"
                       + "  Choose one of the following commands to determine which choice you decide. \n"
                       + "    all  - Finds all possible values for that CASCII String and prints all of them out\n"
-                      + "    sect - Finds all possibilities for that CASCII String, but only prints the section (5 above & 5 under) the answer\n"
+                      + "    sect - Finds all possibilities for that CASCII String, but only prints a section, 5 above & 5 under the answer\n"
                       + "    ans  - Finds all possilities (same as above), but only prints out the answer instead\n"
-                      + "    none - Finds all possibilities, but doesn't print anything\n" ;
+                      + "    none - Finds all possibilities, but doesn't print anything" ;
         return sayAndAskPrompt(prompt);
     }
     
     private static Show sayAndAskPrompt(String prompt) {
-        Scanner reader = new Scanner(System.in);        
-        boolean notAnswered = true;        
+        
+        Scanner reader = new Scanner(System.in);
+        boolean notAnswered = true;
         String input = null;
         
-        do {
-            try {
-                System.out.println("\n" + prompt);    
+        try {
+            do {
+                System.out.println("\n" + prompt);
                 input = reader.nextLine();
                 input = input.trim().toLowerCase();
                 
                 switch(input) {
                     case "all":
-                        reader.close();
                         return Show.ALL;
                     case "sect":
-                        reader.close();
                         return Show.SECT;
                     case "ans":
-                        reader.close();
                         return Show.ANS;
                     case "none":
-                        reader.close();
                         return Show.NONE;
                     default:
                         break;
                 }
-            } catch(NullPointerException e) {
-                System.out.println("That was not a valid input. Please try again.");
-            }
-        } while ( notAnswered || input != null || input.length() > 0 );
+                
+            } while ( notAnswered || input != null || input.length() > 0 );
+            
+            reader.close();
+            
+        } catch(NullPointerException e) {
+            System.out.println("That was not a valid input. Please try again.");
+        }
         
         return null;
     }
     
-    
+    private static void performAction(ArrayList<String> list, int ansPos, Show chosen) {
+        
+        switch (chosen) {
+            
+            case ALL:
+                System.out.println("These are ALL the possible CASCII decode string.\n");
+                for ( int i = 0; i < list.size(); i++ ) {
+                    if ( i != ansPos )
+                        System.out.println("   "+list.get(i));
+                    else
+                        System.out.println("\n-> "+list.get(i)+"\n");
+                }
+                System.out.println("\nAfter producing all of the possiblities, one stood out in english. This is what we found: \n\n" + list.get(ansPos) + "\n");
+                break;
+                
+            case SECT:
+                System.out.println("This is the SECTION where the answer was located (for easy check-ablility):\n");                
+                for (int i = ansPos-5; i < ansPos+5; i++) {
+                    if ( i != ansPos )
+                        System.out.println("   "+list.get(i));
+                    else
+                        System.out.println("\n-> "+list.get(i)+"\n");
+                }
+                System.out.println("\nAfter producing all of the possiblities, one stood out in english. This is what we found: \n\n" + list.get(ansPos) + "\n");
+                break;
+                
+            case ANS:
+                System.out.println("\nAfter producing all of the possiblities, one stood out in english. This is the ANSWER we found: \n\n" + list.get(ansPos) + "\n");
+                break;
+                
+            case NONE:
+                System.out.println("All the possibilities were found, you decided not to show any.\n");
+                break;
+                
+            default:
+                System.out.println("ERR: Something went wrong while deciding on acction. :/");
+                break;
+        }
+        
+    }
     
 }   
