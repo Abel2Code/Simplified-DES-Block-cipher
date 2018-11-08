@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CrackingEncryption {
     
@@ -11,10 +13,9 @@ public class CrackingEncryption {
                 
         String msg1, msg2;
         boolean isLocal = filePathPrompt();
-        if ( isLocal ) {
-            String[] paths = grabPaths();
-            msg1 = paths[0];
-            msg2 = paths[1];
+        if ( isLocal ) {            
+            msg1 = grabPath("msg1.txt");
+            msg2 = grabPath("msg2.txt");
         }
         else {
             msg1 = psuedoFileMsg1;
@@ -67,20 +68,31 @@ public class CrackingEncryption {
         
         System.out.println( problemNum(2) );
         
-        Show result = askPrompt(1024);
-        
-        System.out.println(" * This may take a few seconds. Please wait. Thank you * \n");
+        Show result = askPrompt(1024);      
         
         int answerPosition = 756;  // This value is hard coded because i spent the time to manually search the output for the decrypted message.
                                    // It's used to simmplifiy the code, since it was alreaddy manually found.
         byte[] ciphertext;
         
-        if ( isLocal ) {
-            ciphertext = parseFile(file);
-        }
-        else {
-            ciphertext = psuedoParse(file);
-        }
+        do {
+            if ( isLocal ) {
+                ciphertext = parseFile(file);  
+            }
+            else {
+                ciphertext = psuedoParse(file);
+            }
+            if ( ciphertext == null ) {
+                isLocal = failedFilePathPrompt();
+                if ( isLocal ) 
+                    file = grabPath("msg2.txt");            
+                else 
+                    file = psuedoFileMsg1;
+            }
+            
+        } while ( ciphertext == null );
+        
+        System.out.println("\n - File is valid, processing continues. - \n");
+        System.out.println(" * This may take a few seconds. Please wait. Thank you * \n");
         
         byte[][] keys = keyPermutations();
         
@@ -105,19 +117,29 @@ public class CrackingEncryption {
                                       // It's used to simmplifiy the code, since it was alreaddy manually found.        
         byte[] ciphertext;
         
-        if ( isLocal ) {
-            ciphertext = parseFile(file);
-        }
-        else {
-            ciphertext = psuedoParse(file);
-        }
-                
+        do {
+            if ( isLocal ) 
+                ciphertext = parseFile(file);            
+            else 
+                ciphertext = psuedoParse(file);
+            
+            if ( ciphertext == null ) {
+                isLocal = failedFilePathPrompt();
+                if ( isLocal ) 
+                    file = grabPath("msg2.txt");            
+                else 
+                    file = psuedoFileMsg2;
+            }
+            
+        } while ( ciphertext == null );
+        
         byte[][] key1s = keyPermutations();
         byte[][] key2s = keyPermutations();
         
         ArrayList<String> deciph = new ArrayList<>();
         int attempt = 0;
         
+        System.out.println("\n - File is valid, processing continues. - \n");
         System.out.println(" * This may take a couple minutes. Please wait. Thank you * \n");
         
         for ( byte[] key1 : key1s ) {
@@ -260,17 +282,17 @@ public class CrackingEncryption {
                       + "    all  - Finds all possible values for that CASCII String and prints all of them out. THERE ARE ( " + possible + " ) POSSIBILITIES. \n"
                       + "    sect - Finds all possibilities for that CASCII String, but only prints a section, 5 above & 5 under the answer\n"
                       + "    ans  - Finds all possilities (same as above), but only prints out the answer instead\n"
-                      + "    none - Finds all possibilities, but doesn't print anything" ;
+                      + "    none - Finds all possibilities, but doesn't print anything\n\n" ;
         return sayAndAskPrompt(prompt);
     }
     
     private static Show sayAndAskPrompt(String prompt) {
         
         Scanner reader = new Scanner(System.in);
-        String input = null;        
+        String input = null;
         System.out.print("\n" + prompt);
+        
         do {
-            System.out.println();
             input = reader.nextLine();
             input = input.trim().toLowerCase();
              
@@ -284,15 +306,12 @@ public class CrackingEncryption {
                 case "none":
                     return Show.NONE;
                 default:
-                    System.out.print(">> Not a valid Input, Try again. <<");
+                    System.out.print(">> Not a valid Input, Try again. <<\n");
                     break;
             }
                 
-        } while ( input != null || input.length() > 0 );
-            
-        reader.close();
+        } while (true);
         
-        return null;
     }
     
     private static void performAction(ArrayList<String> list, int ansPos, Show chosen) {
@@ -300,7 +319,7 @@ public class CrackingEncryption {
         switch (chosen) {
             
             case ALL:
-                System.out.println("These are ALL the possible CASCII decoded strings.\n");
+                System.out.println("\nThese are ALL the possible CASCII decoded strings.\n");
                 for ( int i = 0; i < list.size(); i++ ) {
                     if ( i != ansPos )
                         System.out.println("   "+list.get(i));
@@ -311,7 +330,7 @@ public class CrackingEncryption {
                 break;
                 
             case SECT:
-                System.out.println("This is the SECTION where the answer was located (for easy check-ablility):\n");                
+                System.out.println("\nThis is the SECTION where the answer was located (for easy check-ablility):\n");                
                 for (int i = ansPos-5; i < ansPos+5; i++) {
                     if ( i != ansPos )
                         System.out.println("   "+list.get(i));
@@ -347,31 +366,27 @@ public class CrackingEncryption {
         
     public static byte[] parseFile(String relPath) {
         
-        try {
-            File file = new File(relPath);
+        File file = new File(relPath);
                         
-            try (Scanner reader = new Scanner(file)) {
+        try (Scanner reader = new Scanner(file)) {
                 
-                byte b;
-                String line, sub;
-                byte[] bytes;
-                // This if statement is assuming that there is only one line, and
-                // that all the bytes are written in that single line.
-                if ( reader.hasNextLine()) {
-                    line = reader.nextLine();
-                    bytes = new byte[line.length()];
-                    for ( int i = 0; i < line.length(); i++) {
-                        sub = line.substring(i, i+1);
-                        b = Byte.parseByte(sub);
-                        bytes[i] = b;
-                    }
-                    return bytes;
+            byte b;
+            String line, sub;
+            byte[] bytes;
+            // This if statement is assuming that there is only one line, and
+            // that all the bytes are written in that single line.
+            if ( reader.hasNextLine()) {
+                line = reader.nextLine();
+                bytes = new byte[line.length()];
+                for ( int i = 0; i < line.length(); i++) {
+                    sub = line.substring(i, i+1);
+                    b = Byte.parseByte(sub);
+                    bytes[i] = b;
                 }
+                return bytes;
             }
-            return null;
-            
         } catch (FileNotFoundException ex) {
-            System.out.println("\nERROR: File Not Found \n");
+            System.out.println("***** !! ERROR: FILE NOT FOUND : " + relPath + " is not a valid file path !! *****");
         }
         return null;
     }
@@ -392,23 +407,13 @@ public class CrackingEncryption {
         return bytes;
     }
     
-    
-    
-    private static String[] grabPaths() {
-        Scanner sc = new Scanner(System.in);        
-        String[] paths = new String[2];
+    private static String grabPath(String name) {
+        Scanner sc = new Scanner(System.in);
         
-        System.out.println("\nWhat is the file path for the msg1.txt file that will be used ?");
-        String path1 = sc.nextLine();  
-        paths[0] = path1;
-        
-        System.out.println("\nWhat is the file path for the msg2.txt file that will be used ?");
-        String path2 = sc.nextLine();  
-        paths[1] = path2;
-        
-        sc.close();
-        
-        return paths;
+        System.out.println("\nWhat is the file path for the " + name + " file that will be used ?");
+        String path = sc.nextLine().trim().toLowerCase();
+                
+        return path;
     }
     
     private static boolean filePathPrompt() {
@@ -420,7 +425,7 @@ public class CrackingEncryption {
                          + "\n   or from the msg1 and ms2 file data stored in this program. (it is the exact same data as the files provided on CSNS) ?\n");
         System.out.println("    Type in one of the following choices: ");
         System.out.println("      local  -  I want to use my own ms1 and ms2 files from my local machine (Requires both file paths)\n"
-                         + "      stored -  I want to use the data from msg1 and ms2 that is already stored in this program (Exact same data as msg1.txt and ms2.txt from CSNS)");
+                         + "      stored -  I want to use the data from msg1 and ms2 that is already stored in this program (Exact same data as msg1.txt and ms2.txt from CSNS)\n");
         Scanner sc = new Scanner(System.in);
         String isLocal;
         do {
@@ -434,9 +439,33 @@ public class CrackingEncryption {
                     System.out.println(">> Not a valid Input, Try again. <<");
                     break;
             }
-        } while ( isLocal != null || isLocal.length() > 0 );
-        sc.close();
-        return false;
+        } while (true);
+    }
+    
+    private static boolean failedFilePathPrompt() {
+        System.out.println("\n * The file path you previously entered did not lead to a valid file.");
+        System.out.println(" * Since your previous path didn't work, you now have the option to again,"
+                         + "\n     either to provide a correct file path from your local machine OR use the provided psuedo file"
+                + "\n     which already has all of the neccessary data (exactly the same as from the file on CSNS) ");
+        System.out.println("\n * Do you wish to continue with your own files (file path required) from your local machine"
+                         + "\n   or from the msg1 and ms2 file data stored in this program. (it is the exact same data as the files provided on CSNS) ?\n");
+        System.out.println("    Type in one of the following choices: ");
+        System.out.println("      local  -  I want to use my own ms1 and ms2 files from my local machine (Requires both file paths)\n"
+                         + "      stored -  I want to use the data from msg1 and ms2 that is already stored in this program (Exact same data as msg1.txt and ms2.txt from CSNS)\n");
+        Scanner sc = new Scanner(System.in);
+        String isLocal;
+        do {
+            isLocal = sc.nextLine().trim().toLowerCase();
+            switch (isLocal) {
+                case "local":
+                    return true;
+                case "stored":
+                    return false;
+                default:
+                    System.out.println(">> Not a valid Input, Try again. <<");
+                    break;
+            }
+        } while (true);
     }
     
     private static enum Show { ALL, SECT, ANS, NONE };
