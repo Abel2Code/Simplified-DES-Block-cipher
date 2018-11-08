@@ -16,7 +16,7 @@ public class CrackingEncryption {
     public static void problem1() {
         System.out.println();
         
-        System.out.println(" - - - - - - - Problem 1 - - - - - - - - - \n");
+        System.out.println( problemNum(1) );
         
         byte[] key = {0,1,1,1,0,0,1,1,0,1};
         String word = "CRYPTOGRAPHY";
@@ -26,7 +26,7 @@ public class CrackingEncryption {
         byte[] section = new byte[8];
         byte[] ciphSect;
         
-        System.out.println("This is the plain text in CASCII.");
+        System.out.println("\nThis is the plain text in CASCII.");
         System.out.println(word + "\n");
         
         System.out.print("This is the byte array of the plain text.");
@@ -52,9 +52,9 @@ public class CrackingEncryption {
     
     public static void problem2() {     
         
-        System.out.println("\n - - - - - - Problem 2 - - - - - - - -");
+        System.out.println( problemNum(2) );
         
-        Show result = askPrompt();
+        Show result = askPrompt(1024);
         
         System.out.println(" * This may take a few seconds. Please wait. Thank you * \n");
         
@@ -78,9 +78,9 @@ public class CrackingEncryption {
     
     public static void problem3() {
         
-        System.out.println("\n - - - - - - Problem 3 - - - - - - - -");
+        System.out.println( problemNum(3) );
         
-        Show result = askPrompt();
+        Show result = askPrompt(1024*1024);
         
         int answerPosition = 922979;  // This value is hard coded because i spent the time to manually search the output for the decrypted message.
                               // It's used to simmplifiy the code, since it was alreaddy manually found.
@@ -265,10 +265,10 @@ public class CrackingEncryption {
     
     private static enum Show { ALL, SECT, ANS, NONE };
     
-    private static Show askPrompt() {
+    private static Show askPrompt(int possible) {
         String prompt = "What would you like to display for this problem.\n"
                       + "  Choose one of the following commands to determine which choice you decide. \n"
-                      + "    all  - Finds all possible values for that CASCII String and prints all of them out\n"
+                      + "    all  - Finds all possible values for that CASCII String and prints all of them out. THERE ARE ( " + possible + " ) POSSIBILITIES. \n"
                       + "    sect - Finds all possibilities for that CASCII String, but only prints a section, 5 above & 5 under the answer\n"
                       + "    ans  - Finds all possilities (same as above), but only prints out the answer instead\n"
                       + "    none - Finds all possibilities, but doesn't print anything" ;
@@ -316,7 +316,7 @@ public class CrackingEncryption {
         switch (chosen) {
             
             case ALL:
-                System.out.println("These are ALL the possible CASCII decode string.\n");
+                System.out.println("These are ALL the possible CASCII decoded strings.\n");
                 for ( int i = 0; i < list.size(); i++ ) {
                     if ( i != ansPos )
                         System.out.println("   "+list.get(i));
@@ -350,6 +350,15 @@ public class CrackingEncryption {
                 break;
         }
         
+    }
+    
+    private static String problemNum(int questionNum) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n");
+        sb.append("***************************************************************************\n");
+        sb.append("*********                      Problem # " + questionNum + "                      ***********\n");
+        sb.append("***************************************************************************");
+        return sb.toString();
     }
     
 }   
