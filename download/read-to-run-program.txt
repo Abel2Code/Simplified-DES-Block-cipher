@@ -1,0 +1,15 @@
+
+In order to run the jar file in this folder, you must first download the 
+
+"Project1.zip" and then right click to rename it. Rename it to:
+
+"Project1.jar" without changing any of the internal files. Then follo the instructions
+
+provided under the "docs" folder in the "Project1.pdf".
+
+
+Thank you.
+
+A project collaboration of:
+
+Jesus Mendoza  and  Abel Salinas
