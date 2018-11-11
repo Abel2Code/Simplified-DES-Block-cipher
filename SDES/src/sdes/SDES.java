@@ -166,7 +166,7 @@ public class SDES {
 		return arr;
 	}
 	
-	public static void main(String[] args) {
+	public static void run() {
 		byte[] rawkey1 = {0,0,0,0,0,0,0,0,0,0};
 		byte[] plaintext1 = {1, 0, 1, 0, 1, 0, 1, 0};
 		
