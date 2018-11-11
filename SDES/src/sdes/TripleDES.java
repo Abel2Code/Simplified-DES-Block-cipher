@@ -1,10 +1,10 @@
 package sdes;
 
-import static sdes.SDES.stringifyByteArray;
+import sdes.SDES;
 
 public class TripleDES {
-   
-    public static void main(String[] args) { // Start of main()
+    
+    public static void run() { // Start of main()
         
         byte[][] texts = initByteArrays();
         
@@ -107,5 +107,16 @@ public class TripleDES {
         
         return texts;
     }
+	
+	protected static String stringifyByteArray(byte[] key) {
+		String arr = "";
+		for(int i = 0; i < key.length; i++){
+			if(i == key.length/2){
+				arr += " ";
+			}
+			arr += key[i];
+		}
+		return arr;
+	}
 
 }
