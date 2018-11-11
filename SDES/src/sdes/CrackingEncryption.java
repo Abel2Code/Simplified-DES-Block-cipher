@@ -4,12 +4,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class CrackingEncryption {
     
-    public static void main(String[] args) {
+    public static void run() {
                 
         String msg1, msg2;
         boolean isLocal = filePathPrompt();
@@ -358,9 +356,9 @@ public class CrackingEncryption {
     private static String problemNum(int questionNum) {
         StringBuilder sb = new StringBuilder();
         sb.append("\n");
-        sb.append("***************************************************************************\n");
-        sb.append("*********                      Problem # " + questionNum + "                      ***********\n");
-        sb.append("***************************************************************************");
+        sb.append("*****************************************************************************\n");
+        sb.append("*********                      Problem # 3." + questionNum + "                      ***********\n");
+        sb.append("*****************************************************************************");
         return sb.toString();
     }    
         
